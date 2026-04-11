@@ -15,6 +15,13 @@ It demonstrates how to handle asynchronous operations in JavaScript using **call
 
 ---
 
+## Technologies
+- HTML, CSS
+- JavaScript (ES6+)
+- OpenWeatherMap API
+- LocalStorage
+
+
 ## Project Structure
 iyf-s10-week-06-dollagraceambwaya-commits
 ├── index.html              # Async tasks (Lesson 11 & 12)

@@ -20,9 +20,8 @@ const wind = document.getElementById("wind");
 const pressure = document.getElementById("pressure");
 
 async function getWeather(city) {
-    const units = isCelcius ? "metric" : "imperial";
+  const units = isCelcius ? "metric" : "imperial";
   const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=${units}`;
-  
 
   try {
     showLoading();
@@ -48,7 +47,7 @@ async function getWeather(city) {
 }
 
 async function getForecast(city) {
-    const units = isCelcius ? "metric" : "imperial";
+  const units = isCelcius ? "metric" : "imperial";
   const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=${units}`;
 
   try {
@@ -66,7 +65,6 @@ async function getForecast(city) {
 
     const data = await response.json();
     displayForecast(data);
-    
   } catch (err) {
     showError(err.message);
   } finally {
@@ -89,19 +87,19 @@ function displayWeather(data) {
 }
 function setBackground(condition) {
   const body = document.body;
-    switch (condition.toLowerCase()) {
-      case "clear":
-        body.style.backgroundColor = "#87CEEB"; // Sky blue for clear skies
-        break;
-      case "clouds":
-        body.style.backgroundColor = "#A9A9A9"; // Dark gray for clouds
-        break;
-      case "rain":
-        body.style.backgroundColor = "#4682B4"; // Steel blue for rain
-        break;
-      default:
-        body.style.backgroundColor = "#87CEEB"; // Default to sky blue
-    }
+  switch (condition.toLowerCase()) {
+    case "clear":
+      body.style.backgroundColor = "#87CEEB"; // Sky blue for clear skies
+      break;
+    case "clouds":
+      body.style.backgroundColor = "#A9A9A9"; // Dark gray for clouds
+      break;
+    case "rain":
+      body.style.backgroundColor = "#4682B4"; // Steel blue for rain
+      break;
+    default:
+      body.style.backgroundColor = "#87CEEB"; // Default to sky blue
+  }
 }
 
 function displayForecast(data) {
@@ -110,7 +108,7 @@ function displayForecast(data) {
 
   // Group forecasts by date
   const daily = {};
-  data.list.forEach(item => {
+  data.list.forEach((item) => {
     const date = new Date(item.dt * 1000).toLocaleDateString();
     if (!daily[date]) {
       daily[date] = item; // take the first entry for that day
@@ -118,20 +116,22 @@ function displayForecast(data) {
   });
 
   // Show up to 5 days
-  Object.keys(daily).slice(0, 5).forEach(date => {
-    const day = daily[date];
-    const card = document.createElement("div");
-    card.classList.add("forecast-card");
+  Object.keys(daily)
+    .slice(0, 5)
+    .forEach((date) => {
+      const day = daily[date];
+      const card = document.createElement("div");
+      card.classList.add("forecast-card");
 
-    card.innerHTML = `
+      card.innerHTML = `
             <h3>${new Date(day.dt * 1000).toLocaleDateString()}</h3>
             <img src="https://openweathermap.org/img/wn/${day.weather[0].icon}.png" alt="Weather icon">
             <p>${Math.round(day.main.temp)}°${isCelcius ? "C" : "F"}</p>
             <p>${day.weather[0].description}</p>
         `;
 
-    forecastCards.appendChild(card);
-  });
+      forecastCards.appendChild(card);
+    });
 
   document.getElementById("forecast").classList.remove("hidden");
 }
@@ -177,7 +177,7 @@ function saveToHistory(city) {
   }
 
   // Remove duplicates (case-insensitive)
-  history = history.filter(c => c.toLowerCase() !== city.toLowerCase());
+  history = history.filter((c) => c.toLowerCase() !== city.toLowerCase());
 
   // Add city to the front
   history.unshift(city);
@@ -189,14 +189,10 @@ function saveToHistory(city) {
   displayHistory(history);
 }
 
-
-
-
-
 function loadHistory() {
   // Load from localStorage and display
   let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
-    displayHistory(history);
+  displayHistory(history);
 }
 
 let isCelcius = true;
@@ -204,20 +200,20 @@ const unitToggle = document.getElementById("unit-toggle");
 unitToggle.addEventListener("click", () => {
   isCelcius = !isCelcius;
   unitToggle.textContent = isCelcius ? "Switch to °F" : "Switch to °C";
-//   Refetch weather data for the current city to update units
+  //   Refetch weather data for the current city to update units
   const currentCity = cityName.textContent.split(",")[0];
-    if (currentCity) {
-        getWeather(currentCity);
-        getForecast(currentCity);
-    }
+  if (currentCity) {
+    getWeather(currentCity);
+    getForecast(currentCity);
+  }
 });
-    
-     document.getElementById("geo-btn").addEventListener("click", () => {
+
+document.getElementById("geo-btn").addEventListener("click", () => {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(success, error);
-    } else {
-        showError("Geolocation is not supported by this browser.");
-    }
+  } else {
+    showError("Geolocation is not supported by this browser.");
+  }
 });
 
 function success(position) {
@@ -227,20 +223,18 @@ function success(position) {
   const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=${units}`;
 
   fetch(url)
-    .then(response => response.json())
-    .then(data => {
+    .then((response) => response.json())
+    .then((data) => {
       displayWeather(data);
       saveToHistory(data.name); // Save the city name to history
       getForecast(data.name); // Fetch forecast data for the detected city
     })
     .catch(() => showError("Failed to fetch location weather data."));
-    }
-    
+}
 
-    function handleGeoError() {     
-         showError("Unable to retrieve your location.");
-        }
-  
+function handleGeoError() {
+  showError("Unable to retrieve your location.");
+}
 
 // Event Listeners
 form.addEventListener("submit", (e) => {
